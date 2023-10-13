@@ -1,3 +1,4 @@
+#[derive(Debug, Clone, Copy)]
 pub struct Game {
     pub board: [[u16; 9]; 9],
 }
@@ -20,6 +21,39 @@ impl Game {
             [0, 0, 0, 0, 8, 0, 0, 7, 9],
         ],
     };
+    pub const OTHER: Game = Game {
+        board: [
+            [3, 0, 0, 8, 0, 1, 0, 0, 2],
+            [2, 0, 1, 0, 3, 0, 6, 0, 4],
+            [0, 0, 0, 2, 0, 4, 0, 0, 0],
+            [8, 0, 9, 0, 0, 0, 1, 0, 6],
+            [0, 6, 0, 0, 0, 0, 0, 5, 0],
+            [7, 0, 2, 0, 0, 0, 4, 0, 9],
+            [0, 0, 0, 5, 0, 0, 0, 0, 0],
+            [9, 0, 4, 0, 0, 0, 0, 0, 5],
+            [6, 0, 0, 1, 0, 7, 0, 0, 3],
+        ],
+    };
+
+    pub fn check_win(&self) -> bool {
+        for i in 0..9 {
+            for j in 0..9 {
+                if self.board[i][j] == 0 {
+                    return false;
+                }
+            }
+        }
+        return self.is_valid();
+    }
+
+    pub fn print(&self) {
+        for i in 0..9 {
+            for j in 0..9 {
+                print!("{} ", self.board[i][j]);
+            }
+            println!();
+        }
+    }
 
     pub fn is_valid(&self) -> bool {
         for i in 0..9 {

@@ -1,10 +1,16 @@
 use crate::utils::Game;
 use std::collections::HashSet;
 
-pub fn solve(game: Game) {
-    let mut count = 0;
-    for i in 0..8 {
-        for j in 0..8 {
+pub fn solve(game: &mut Game) -> Vec<Game> {
+    if game.check_win() {
+        return vec![game.clone()];
+    }
+    if !game.is_valid() {
+        return Vec::new();
+    }
+    let mut solutions = Vec::new();
+    for i in 0..=8 {
+        for j in 0..=8 {
             if game.board[i][j] != 0 {
                 continue;
             }
@@ -15,14 +21,18 @@ pub fn solve(game: Game) {
                 get_avaible_col(game.board, j),
             );
 
-            for i in avaible.iter() {
-                print!("{} ", i);
-                count += 1;
+            for &num in avaible.iter() {
+                game.board[i][j] = num;
+                let res = solve(game);
+                if res.len() > 0 {
+                    solutions.extend(res);
+                }
+                game.board[i][j] = 0;
             }
-            println!();
+            return solutions;
         }
     }
-    println!("count: {}", count);
+    solutions
 }
 pub fn get_avaible_square(board: [[u16; 9]; 9], n: usize) -> HashSet<u16> {
     let mut arr = Vec::new();
@@ -38,7 +48,7 @@ pub fn get_avaible_square(board: [[u16; 9]; 9], n: usize) -> HashSet<u16> {
             arr.push(board[i][j])
         }
     }
-    let set: HashSet<u16> = (1..8).collect();
+    let set: HashSet<u16> = (1..10).collect();
     let i: HashSet<u16> = arr.into_iter().collect();
     set.difference(&i).cloned().collect()
 }
@@ -51,7 +61,7 @@ pub fn get_avaible_row(board: [[u16; 9]; 9], row: usize) -> HashSet<u16> {
         }
         arr.push(board[row][i])
     }
-    let set: HashSet<u16> = (1..8).collect();
+    let set: HashSet<u16> = (1..10).collect();
     let i: HashSet<u16> = arr.into_iter().collect();
 
     set.difference(&i).cloned().collect()
@@ -65,7 +75,7 @@ pub fn get_avaible_col(board: [[u16; 9]; 9], col: usize) -> HashSet<u16> {
         }
         arr.push(board[i][col])
     }
-    let set: HashSet<u16> = (1..8).collect();
+    let set: HashSet<u16> = (1..10).collect();
     let i: HashSet<u16> = arr.into_iter().collect();
 
     set.difference(&i).cloned().collect()
